@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catify - lite</title>
+    <title>Catify - Monochrome Lite</title>
     <style>
         * {
             margin: 0;
@@ -12,19 +12,19 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #000000;
+            color: #ffffff;
             padding-bottom: 120px;
         }
         header {
             text-align: center;
             padding: 1.5rem 1rem;
-            background: #1e293b;
-            border-bottom: 1px solid #334155;
+            background: #0a0a0a;
+            border-bottom: 1px solid #222222;
         }
         header h1 {
             font-size: 1.5rem;
-            color: #38bdf8;
+            color: #ffffff;
             letter-spacing: 1px;
         }
         .tabs {
@@ -34,9 +34,9 @@
             margin: 1.2rem 0;
         }
         .tab-btn {
-            background: #1e293b;
-            color: #cbd5e1;
-            border: 1px solid #475569;
+            background: #121212;
+            color: #888888;
+            border: 1px solid #333333;
             padding: 0.5rem 1.2rem;
             border-radius: 8px;
             cursor: pointer;
@@ -44,9 +44,9 @@
             transition: all 0.2s;
         }
         .tab-btn.active {
-            background: #0284c7;
-            color: #fff;
-            border-color: #0284c7;
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
         }
         .container {
             max-width: 800px;
@@ -62,46 +62,48 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #1e293b;
+            background: #121212;
             padding: 0.8rem 1rem;
             border-radius: 8px;
-            border: 1px solid #334155;
+            border: 1px solid #222222;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, border-color 0.2s;
         }
         .track-item:hover {
-            background: #334155;
+            background: #1f1f1f;
+            border-color: #444444;
         }
         .track-item.playing {
-            border-color: #38bdf8;
-            background: #1e293b;
+            border-color: #ffffff;
+            background: #1a1a1a;
         }
         .track-info h3 {
             font-size: 0.95rem;
             margin-bottom: 0.15rem;
+            color: #ffffff;
         }
         .track-info p {
             font-size: 0.8rem;
-            color: #94a3b8;
+            color: #888888;
         }
         .player-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #1e293b;
-            border-top: 1px solid #334155;
+            background: #0a0a0a;
+            border-top: 1px solid #222222;
             padding: 0.8rem 1rem;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
         }
         .player-info {
             text-align: center;
             font-size: 0.85rem;
             font-weight: 500;
-            color: #38bdf8;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -113,25 +115,28 @@
             gap: 0.8rem;
         }
         .control-btn {
-            background: #0284c7;
+            background: #222222;
             color: white;
-            border: none;
+            border: 1px solid #444444;
             padding: 0.4rem 0.9rem;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
             font-size: 0.85rem;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
         .control-btn:hover {
-            background: #0ea5e9;
+            background: #333333;
+            border-color: #666666;
         }
         .control-btn.active-mode {
-            background: #10b981;
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
         }
         input[type="range"] {
             width: 100%;
-            accent-color: #0284c7;
+            accent-color: #ffffff;
             cursor: pointer;
         }
     </style>
@@ -139,7 +144,7 @@
 <body>
 
     <header>
-        <h1>Catify 🐱🎵</h1>
+        <h1>Catify🎵 (Mono)</h1>
     </header>
 
     <div class="tabs">
@@ -188,7 +193,6 @@
             { title: "WA WA WA FUNK", artist: "Slowed", category: "music", src: "music/WA WA WA FUNK (SLOWED).mp3" },
             { title: "ZXVREN - MONTAGEM DELÍRIO", artist: "ZXVREN", category: "music", src: "music/ZXVREN - MONTAGEM DELÍRIO (Slowed).mp3" },
 
-
             { title: "An Thần", artist: "ft. Thắng", category: "chill", src: "chill/An Thần (ft. Thắng).mp3" },
             { title: "Bài Này Chill Phết", artist: "V-Pop Chill", category: "chill", src: "chill/Bài Này Chill Phết.mp3" },
             { title: "CheckMate", artist: "Chill Track", category: "chill", src: "chill/CheckMate.mp3" },
@@ -220,7 +224,7 @@
             { title: "Đánh Đổi", artist: "V-Pop", category: "chill", src: "chill/Đánh Đổi.mp3" },
             { title: "Đen - Mang Tiền Về Cho Mẹ", artist: "Đen Vâu", category: "chill", src: "chill/Đen - Mang Tiền Về Cho Mẹ.mp3" },
             { title: "Đen - Mười Năm", artist: "Den Vâu", category: "chill", src: "chill/Đen - Mười Năm.mp3" },
-            { title: "Đen - Vị nhà", artist: "Đen Vâu", category: "chill", src: "chill/Đen - Vị nhà.mp3" },
+            { title: "Đen - Vị nhà", artist: "Den Vâu", category: "chill", src: "chill/Đen - Vị nhà.mp3" },
             { title: "Ed Sheeran - Shape of You", artist: "Ed Sheeran", category: "chill", src: "chill/Ed Sheeran - Shape of You.mp3" },
             { title: "Im Sorry Mom", artist: "Chill Track", category: "chill", src: "chill/Im Sorry Mom.mp3" },
             { title: "Mất Thời Gian", artist: "Chill Track", category: "chill", src: "chill/Mất Thời Gian.mp3" },
