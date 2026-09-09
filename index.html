@@ -112,7 +112,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.6rem;
+            flex-wrap: wrap;
         }
         .control-btn {
             background: #222222;
@@ -144,7 +145,7 @@
 <body>
 
     <header>
-        <h1>Catify🎵  </h1>
+        <h1>Catify🎵</h1>
     </header>
 
     <div class="tabs">
@@ -161,6 +162,7 @@
         <input type="range" id="progress-bar" value="0" max="100" step="1">
         <div class="player-controls">
             <button class="control-btn" id="shuffle-btn" onclick="toggleShuffle()" title="Bật/Tắt phát ngẫu nhiên">🔀 Random</button>
+            <button class="control-btn" id="repeat-btn" onclick="toggleRepeat()" title="Bật/Tắt lặp lại bài hát">🔂 Lặp</button>
             <button class="control-btn" onclick="prevTrack()">⏮ Trước</button>
             <button class="control-btn" id="play-pause-btn" onclick="togglePlay()">▶ Phát</button>
             <button class="control-btn" onclick="nextTrack()">Sau ⏭</button>
@@ -239,12 +241,14 @@
         let currentCategory = 'music';
         let currentTrackIndex = 0;
         let isShuffle = false;
+        let isRepeat = false;
 
         const audioElement = document.getElementById('audio-element');
         const playPauseBtn = document.getElementById('play-pause-btn');
         const trackTitleDisplay = document.getElementById('current-track-title');
         const progressBar = document.getElementById('progress-bar');
         const shuffleBtn = document.getElementById('shuffle-btn');
+        const repeatBtn = document.getElementById('repeat-btn');
 
         function renderPlaylist() {
             const container = document.getElementById('playlist-container');
@@ -315,6 +319,17 @@
             }
         }
 
+        function toggleRepeat() {
+            isRepeat = !isRepeat;
+            if (isRepeat) {
+                repeatBtn.classList.add('active-mode');
+                repeatBtn.textContent = '🔂 Đang Lặp';
+            } else {
+                repeatBtn.classList.remove('active-mode');
+                repeatBtn.textContent = '🔂 Lặp';
+            }
+        }
+
         function nextTrack() {
             const filteredTracks = tracks.filter(t => t.category === currentCategory);
             if (filteredTracks.length === 0) return;
@@ -355,7 +370,12 @@
         };
 
         audioElement.onended = () => {
-            nextTrack();
+            if (isRepeat) {
+                audioElement.currentTime = 0;
+                audioElement.play();
+            } else {
+                nextTrack();
+            }
         };
 
         renderPlaylist();
