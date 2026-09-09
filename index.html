@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catify - lite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding-bottom: 120px;
+        }
+        header {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+        }
+        header h1 {
+            font-size: 1.5rem;
+            color: #38bdf8;
+            letter-spacing: 1px;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.2rem 0;
+        }
+        .tab-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #475569;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: #0284c7;
+            color: #fff;
+            border-color: #0284c7;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .track-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e293b;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .track-item:hover {
+            background: #334155;
+        }
+        .track-item.playing {
+            border-color: #38bdf8;
+            background: #1e293b;
+        }
+        .track-info h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.15rem;
+        }
+        .track-info p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .player-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            padding: 0.8rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
+        }
+        .player-info {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #38bdf8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .control-btn {
+            background: #0284c7;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .control-btn:hover {
+            background: #0ea5e9;
+        }
+        .control-btn.active-mode {
+            background: #10b981;
+        }
+        input[type="range"] {
+            width: 100%;
+            accent-color: #0284c7;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Catify 🐱🎵</h1>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('music')">Gaming (Phonk)</button>
+        <button class="tab-btn" onclick="switchTab('chill')">Chill / V-Pop</button>
+    </div>
+
+    <div class="container">
+        <div id="playlist-container" class="playlist"></div>
+    </div>
+
+    <div class="player-bar">
+        <div class="player-info" id="current-track-title">Chưa chọn bài hát nào</div>
+        <input type="range" id="progress-bar" value="0" max="100" step="1">
+        <div class="player-controls">
+            <button class="control-btn" id="shuffle-btn" onclick="toggleShuffle()" title="Bật/Tắt phát ngẫu nhiên">🔀 Random</button>
+            <button class="control-btn" onclick="prevTrack()">⏮ Trước</button>
+            <button class="control-btn" id="play-pause-btn" onclick="togglePlay()">▶ Phát</button>
+            <button class="control-btn" onclick="nextTrack()">Sau ⏭</button>
+        </div>
+    </div>
+
+    <audio id="audio-element"></audio>
+
+    <script>
+        const tracks = [
+            { title: "Can You Feel My Heart", artist: "Gaming Mix", category: "music", src: "music/Can You Feel My Heart.mp3" },
+            { title: "Centuries", artist: "Fall Out Boy", category: "music", src: "music/Centuries.mp3" },
+            { title: "Chris Grey - LET THE WORLD BURN", artist: "Chris Grey", category: "music", src: "music/Chris Grey - LET THE WORLD BURN.mp3" },
+            { title: "Dakooka", artist: "Gaming Mix", category: "music", src: "music/dakooka.mp3" },
+            { title: "Đầu Đường Xó Chợ", artist: "Obito x Shiki x Lăng LD", category: "music", src: "music/Đầu Đường Xó Chợ.mp3" },
+            { title: "DIA DE FIESTA", artist: "Slowed", category: "music", src: "music/DIA DE FIESTA SLOWED.mp3" },
+            { title: "Ed Sheeran - Shape of You", artist: "Ed Sheeran", category: "music", src: "music/Ed Sheeran - Shape of You.mp3" },
+            { title: "gluttony", artist: "Slowed", category: "music", src: "music/gluttony (slowed).mp3" },
+            { title: "HEAVENLY JUMPSTYLE", artist: "Gaming Mix", category: "music", src: "music/HEAVENLY JUMPSTYLE.mp3" },
+            { title: "Immortals", artist: "Fall Out Boy", category: "music", src: "music/Immortals.mp3" },
+            { title: "KINDA HOMELESS FUNK", artist: "Gaming Mix", category: "music", src: "music/KINDA_HOMELESS_FUNK.mp3" },
+            { title: "MONTAGEM BAILAO", artist: "Phonk Mix", category: "music", src: "music/MONTAGEM BAILAO.mp3" },
+            { title: "MONTAGEM SANTA FE 2", artist: "Phonk Mix", category: "music", src: "music/MONTAGEM SANTA FE 2.mp3" },
+            { title: "MONTAGEM XIN DONG", artist: "Phonk Mix", category: "music", src: "music/MONTAGEM XIN DONG.mp3" },
+            { title: "MONTAGEM YUESHI", artist: "WUYS", category: "music", src: "music/MONTAGEM YUESHI - WUYS.mp3" },
+            { title: "O my god", artist: "Slowed", category: "music", src: "music/O my god (Slowed).mp3" },
+            { title: "SEM PERDO", artist: "Ultra Slowed", category: "music", src: "music/SEM PERDO (ultra slowed).mp3" },
+            { title: "Shluzov", artist: "Slowed", category: "music", src: "music/Shluzov- Slowed.mp3" },
+            { title: "Skillet - Monster", artist: "Skillet", category: "music", src: "music/Skillet - Monster (Official Video).mp3" },
+            { title: "WA WA WA FUNK", artist: "Slowed", category: "music", src: "music/WA WA WA FUNK (SLOWED).mp3" },
+            { title: "ZXVREN - MONTAGEM DELÍRIO", artist: "ZXVREN", category: "music", src: "music/ZXVREN - MONTAGEM DELÍRIO (Slowed).mp3" },
+
+
+            { title: "An Thần", artist: "ft. Thắng", category: "chill", src: "chill/An Thần (ft. Thắng).mp3" },
+            { title: "Bài Này Chill Phết", artist: "V-Pop Chill", category: "chill", src: "chill/Bài Này Chill Phết.mp3" },
+            { title: "CheckMate", artist: "Chill Track", category: "chill", src: "chill/CheckMate.mp3" },
+            { title: "Đầu Đường Xó Chợ", artist: "Obito; Shiki; Lăng LD", category: "chill", src: "chill/Đầu Đường Xó Chợ.mp3" },
+            { title: "Đen - một triệu like", artist: "Đen Vâu", category: "chill", src: "chill/Đen - một triệu like.mp3" },
+            { title: "Đen x JustaTee - Đi Về Nhà", artist: "Đen x JustaTee", category: "chill", src: "chill/Đen x JustaTee - Đi Về Nhà.mp3" },
+            { title: "Fall Out Boy - Centuries", artist: "Fall Out Boy", category: "chill", src: "chill/Fall Out Boy - Centuries (Official Video).mp3" },
+            { title: "LỚN RỒI CÒN KHÓC NHÈ", artist: "V-Pop", category: "chill", src: "chill/LỚN RỒI CÒN KHÓC NHÈ.mp3" },
+            { title: "Mất Tích", artist: "Chill Track", category: "chill", src: "chill/Mất Tích.mp3" },
+            { title: "Ngọt - CHUYỂN KÊNH", artist: "Ngọt", category: "chill", src: "chill/Ngọt - CHUYỂN KÊNH.mp3" },
+            { title: "Ngọt - Thấy Chưa", artist: "Ngọt", category: "chill", src: "chill/Ngọt - Thấy Chưa(Official Music Video).mp3" },
+            { title: "Obito - Đánh Đổi", artist: "Obito", category: "chill", src: "chill/Obito - Đánh Đổi.mp3" },
+            { title: "Skillet - Monster", artist: "Skillet", category: "chill", src: "chill/Skillet - Monster (Official Video).mp3" },
+            { title: "Thức Giấc", artist: "Da LAB", category: "chill", src: "chill/Thức Giấc - Da LAB.mp3" },
+            { title: "Avicii - Waiting For Love", artist: "Avicii", category: "chill", src: "chill/Avicii - Waiting For Love.mp3" },
+            { title: "Bring Me The Horizon - Can You Feel My Heart", artist: "Bring Me The Horizon", category: "chill", src: "chill/Bring Me The Horizon - Can You Feel My Heart....mp3" },
+            { title: "Đá tan", artist: "Chill Track", category: "chill", src: "chill/Đá tan.mp3" },
+            { title: "David Kushner - Daylight", artist: "David Kushner", category: "chill", src: "chill/David Kushner - Daylight (Official Music Video....mp3" },
+            { title: "Gội Đầu (với Hà Lê)", artist: "Rebalanced", category: "chill", src: "chill/Gội Đầu (với Hà Lê)[rebalanced (1)].mp3" },
+            { title: "Lukas Graham - 7 Years", artist: "Lukas Graham", category: "chill", src: "chill/Lukas Graham - 7 Years.mp3" },
+            { title: "Ngọt - Cho Tôi Đi Theo", artist: "Ngọt", category: "chill", src: "chill/Ngọt - Cho Tôi Đi Theo.mp3" },
+            { title: "Ngọt - HẾT THỜI", artist: "Ngọt", category: "chill", src: "chill/Ngọt - HẾT THỜI.mp3" },
+            { title: "Nói Dối", artist: "Ronboogz", category: "chill", src: "chill/Nói Dối Ronboogz (Lyrics Video).mp3" },
+            { title: "Olly Murs - That Girl", artist: "Olly Murs", category: "chill", src: "chill/Olly Murs - That Girl (Lyric Video).mp3" },
+            { title: "Táo - Blue Tequila", artist: "Táo", category: "chill", src: "chill/Táo - Blue Tequila (Official Video).mp3" },
+            { title: "Trước Khi Em Tồn Tại", artist: "V-Pop Chill", category: "chill", src: "chill/Trước Khi Em Tồn Tại.mp3" },
+            { title: "BẠC PHẬN", artist: "V-Pop", category: "chill", src: "chill/BẠC PHẬN.mp3" },
+            { title: "Charlie Puth - We Don't Talk Anymore", artist: "Charlie Puth", category: "chill", src: "chill/Charlie Puth - We Don't Talk Anymore.mp3" },
+            { title: "Đánh Đổi", artist: "V-Pop", category: "chill", src: "chill/Đánh Đổi.mp3" },
+            { title: "Đen - Mang Tiền Về Cho Mẹ", artist: "Đen Vâu", category: "chill", src: "chill/Đen - Mang Tiền Về Cho Mẹ.mp3" },
+            { title: "Đen - Mười Năm", artist: "Den Vâu", category: "chill", src: "chill/Đen - Mười Năm.mp3" },
+            { title: "Đen - Vị nhà", artist: "Đen Vâu", category: "chill", src: "chill/Đen - Vị nhà.mp3" },
+            { title: "Ed Sheeran - Shape of You", artist: "Ed Sheeran", category: "chill", src: "chill/Ed Sheeran - Shape of You.mp3" },
+            { title: "Im Sorry Mom", artist: "Chill Track", category: "chill", src: "chill/Im Sorry Mom.mp3" },
+            { title: "Mất Thời Gian", artist: "Chill Track", category: "chill", src: "chill/Mất Thời Gian.mp3" },
+            { title: "Ngọt - Cho", artist: "Ngọt", category: "chill", src: "chill/Ngọt - Cho.mp3" },
+            { title: "Ngọt - Kẻ thù", artist: "Ngọt", category: "chill", src: "chill/Ngọt - Kẻ thù.mp3" },
+            { title: "Nói Dối Ronboogz", artist: "Ronboogz", category: "chill", src: "chill/Nói Dối Ronboogz.mp3" },
+            { title: "OneRepublic - Counting Stars", artist: "OneRepublic", category: "chill", src: "chill/OneRepublic - Counting Stars.mp3" },
+            { title: "Tết Đông Đầy", artist: "V-Pop", category: "chill", src: "chill/Tết Đông Đầy.mp3" },
+            { title: "Zella Day - East of Eden", artist: "Zella Day", category: "chill", src: "chill/Zella Day - East of Eden (Audio Only).mp3" }
+        ];
+
+        let currentCategory = 'music';
+        let currentTrackIndex = 0;
+        let isShuffle = false;
+
+        const audioElement = document.getElementById('audio-element');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const trackTitleDisplay = document.getElementById('current-track-title');
+        const progressBar = document.getElementById('progress-bar');
+        const shuffleBtn = document.getElementById('shuffle-btn');
+
+        function renderPlaylist() {
+            const container = document.getElementById('playlist-container');
+            container.innerHTML = '';
+            
+            const filteredTracks = tracks.filter(t => t.category === currentCategory);
+            
+            filteredTracks.forEach((track) => {
+                const originalIndex = tracks.indexOf(track);
+                const item = document.createElement('div');
+                item.className = 'track-item';
+                if (originalIndex === currentTrackIndex) {
+                    item.classList.add('playing');
+                }
+                item.innerHTML = `
+                    <div class="track-info">
+                        <h3>${track.title}</h3>
+                        <p>${track.artist}</p>
+                    </div>
+                `;
+                item.onclick = () => playTrack(originalIndex);
+                container.appendChild(item);
+            });
+        }
+
+        function switchTab(category) {
+            currentCategory = category;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderPlaylist();
+        }
+
+        function playTrack(index) {
+            currentTrackIndex = index;
+            const track = tracks[currentTrackIndex];
+            audioElement.src = track.src;
+            audioElement.play().catch(e => console.log("Lỗi file nhạc: ", e));
+            playPauseBtn.textContent = '⏸ Tạm dừng';
+            trackTitleDisplay.textContent = `Đang phát: ${track.title} - ${track.artist}`;
+            renderPlaylist();
+        }
+
+        function togglePlay() {
+            if (!audioElement.src) {
+                const filteredTracks = tracks.filter(t => t.category === currentCategory);
+                if (filteredTracks.length > 0) {
+                    playTrack(tracks.indexOf(filteredTracks[0]));
+                }
+                return;
+            }
+            if (audioElement.paused) {
+                audioElement.play();
+                playPauseBtn.textContent = '⏸ Tạm dừng';
+            } else {
+                audioElement.pause();
+                playPauseBtn.textContent = '▶ Phát';
+            }
+        }
+
+        function toggleShuffle() {
+            isShuffle = !isShuffle;
+            if (isShuffle) {
+                shuffleBtn.classList.add('active-mode');
+                shuffleBtn.textContent = '🔀 Đang Random';
+            } else {
+                shuffleBtn.classList.remove('active-mode');
+                shuffleBtn.textContent = '🔀 Random';
+            }
+        }
+
+        function nextTrack() {
+            const filteredTracks = tracks.filter(t => t.category === currentCategory);
+            if (filteredTracks.length === 0) return;
+
+            if (isShuffle) {
+                let randomFilteredIndex;
+                do {
+                    randomFilteredIndex = Math.floor(Math.random() * filteredTracks.length);
+                } while (filteredTracks.length > 1 && tracks.indexOf(filteredTracks[randomFilteredIndex]) === currentTrackIndex);
+                
+                playTrack(tracks.indexOf(filteredTracks[randomFilteredIndex]));
+            } else {
+                const currentFiltered = filteredTracks.findIndex(t => t === tracks[currentTrackIndex]);
+                const nextFilteredIndex = (currentFiltered + 1) % filteredTracks.length;
+                playTrack(tracks.indexOf(filteredTracks[nextFilteredIndex]));
+            }
+        }
+
+        function prevTrack() {
+            const filteredTracks = tracks.filter(t => t.category === currentCategory);
+            if (filteredTracks.length === 0) return;
+            
+            const currentFiltered = filteredTracks.findIndex(t => t === tracks[currentTrackIndex]);
+            const prevFilteredIndex = (currentFiltered - 1 + filteredTracks.length) % filteredTracks.length;
+            playTrack(tracks.indexOf(filteredTracks[prevFilteredIndex]));
+        }
+
+        audioElement.ontimeupdate = () => {
+            if (audioElement.duration) {
+                progressBar.value = (audioElement.currentTime / audioElement.duration) * 100;
+            }
+        };
+
+        progressBar.oninput = () => {
+            if (audioElement.duration) {
+                audioElement.currentTime = (progressBar.value / 100) * audioElement.duration;
+            }
+        };
+
+        audioElement.onended = () => {
+            nextTrack();
+        };
+
+        renderPlaylist();
+    </script>
+</body>
+</html>
