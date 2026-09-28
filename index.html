@@ -143,8 +143,8 @@
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('music')">Gaming (Phonk)</button>
-        <button class="tab-btn" onclick="switchTab('chill')">Chill / V-Pop</button>
+        <button class="tab-btn active" onclick="switchTab('music', event)">Gaming (Phonk)</button>
+        <button class="tab-btn" onclick="switchTab('chill', event)">Chill / V-Pop</button>
     </div>
 
     <div class="container">
@@ -169,6 +169,7 @@
             { title: "Can You Feel My Heart", artist: "Gaming Mix", category: "music", src: "music/Can You Feel My Heart.mp3" },
             { title: "Centuries", artist: "Fall Out Boy", category: "music", src: "music/Centuries.mp3" },
             { title: "Chris Grey - LET THE WORLD BURN", artist: "Chris Grey", category: "music", src: "music/Chris Grey - LET THE WORLD BURN.mp3" },
+            { title: "CRUSHTEKK (Super Slowed)", artist: "Super Slowed", category: "music", src: "music/CRUSHTEKK (Super Slowed).mp3" },
             { title: "Dakooka", artist: "Gaming Mix", category: "music", src: "music/dakooka.mp3" },
             { title: "Đầu Đường Xó Chợ", artist: "Obito x Shiki x Lăng LD", category: "music", src: "music/Đầu Đường Xó Chợ.mp3" },
             { title: "DIA DE FIESTA", artist: "Slowed", category: "music", src: "music/DIA DE FIESTA SLOWED.mp3" },
@@ -176,6 +177,7 @@
             { title: "gluttony", artist: "Slowed", category: "music", src: "music/gluttony (slowed).mp3" },
             { title: "HEAVENLY JUMPSTYLE", artist: "Gaming Mix", category: "music", src: "music/HEAVENLY JUMPSTYLE.mp3" },
             { title: "Immortals", artist: "Fall Out Boy", category: "music", src: "music/Immortals.mp3" },
+            { title: "INVOCADO (ULTRA SLOWED)", artist: "Ultra Slowed", category: "music", src: "music/INVOCADO (ULTRA SLOWED).mp3" },
             { title: "KINDA HOMELESS FUNK", artist: "Gaming Mix", category: "music", src: "music/KINDA_HOMELESS_FUNK.mp3" },
             { title: "MONTAGEM BAILAO", artist: "Phonk Mix", category: "music", src: "music/MONTAGEM BAILAO.mp3" },
             { title: "MONTAGEM SANTA FE 2", artist: "Phonk Mix", category: "music", src: "music/MONTAGEM SANTA FE 2.mp3" },
@@ -187,7 +189,6 @@
             { title: "Skillet - Monster", artist: "Skillet", category: "music", src: "music/Skillet - Monster (Official Video).mp3" },
             { title: "WA WA WA FUNK", artist: "Slowed", category: "music", src: "music/WA WA WA FUNK (SLOWED).mp3" },
             { title: "ZXVREN - MONTAGEM DELÍRIO", artist: "ZXVREN", category: "music", src: "music/ZXVREN - MONTAGEM DELÍRIO (Slowed).mp3" },
-
 
             { title: "An Thần", artist: "ft. Thắng", category: "chill", src: "chill/An Thần (ft. Thắng).mp3" },
             { title: "Bài Này Chill Phết", artist: "V-Pop Chill", category: "chill", src: "chill/Bài Này Chill Phết.mp3" },
@@ -266,7 +267,7 @@
             });
         }
 
-        function switchTab(category) {
+        function switchTab(category, event) {
             currentCategory = category;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
