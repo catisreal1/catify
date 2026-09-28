@@ -7,25 +7,25 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, sans-serif; }
         body { background-color: #000000; color: #ffffff; padding-bottom: 110px; }
-        header { text-align: center; padding: 1.2rem; background: #000000; border-bottom: 1px solid #111; }
+        header { text-align: center; padding: 1.2rem; background: #000000; border-bottom: 1px solid #050505; }
         header h1 { font-size: 1.4rem; color: #1db954; }
         .tabs { display: flex; justify-content: center; gap: 0.8rem; margin: 1rem 0; }
-        .tab-btn { background: #121212; color: #888; border: 1px solid #222; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-weight: 600; }
-        .tab-btn.active { background: #fff; color: #000; border-color: #fff; }
+        .tab-btn { background: #000000; color: #777; border: 1px solid #1a1a1a; padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-weight: 600; }
+        .tab-btn.active { background: #000000; color: #fff; border-color: #1db954; }
         .container { max-width: 750px; margin: 0 auto; padding: 0 1rem; }
         .playlist { display: flex; flex-direction: column; gap: 0.5rem; }
-        .track-item { display: flex; justify-content: space-between; align-items: center; background: #0a0a0a; padding: 0.7rem 1rem; border-radius: 6px; border: 1px solid #1a1a1a; cursor: pointer; }
-        .track-item:hover { background: #181818; }
-        .track-item.playing { border-color: #1db954; background: #121212; }
+        .track-item { display: flex; justify-content: space-between; align-items: center; background: #000000; padding: 0.7rem 1rem; border-radius: 6px; border: 1px solid #111111; cursor: pointer; }
+        .track-item:hover { border-color: #333333; }
+        .track-item.playing { border-color: #1db954; background: #000000; }
         .track-info h3 { font-size: 0.9rem; color: #fff; margin-bottom: 0.1rem; }
-        .track-info p { font-size: 0.75rem; color: #888; }
-        .player-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 1px solid #1a1a1a; padding: 0.7rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+        .track-info p { font-size: 0.75rem; color: #777; }
+        .player-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #000000; border-top: 1px solid #111111; padding: 0.7rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
         .player-info { text-align: center; font-size: 0.8rem; color: #1db954; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-controls { display: flex; justify-content: center; align-items: center; gap: 0.6rem; }
-        .control-btn { background: #1a1a1a; color: #fff; border: none; padding: 0.35rem 0.8rem; border-radius: 15px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-        .control-btn:hover { background: #282828; }
-        .control-btn.active-mode { background: #1db954; color: #000; }
-        input[type="range"] { width: 100%; accent-color: #1db954; cursor: pointer; }
+        .control-btn { background: #000000; color: #fff; border: 1px solid #1a1a1a; padding: 0.35rem 0.8rem; border-radius: 15px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .control-btn:hover { border-color: #444444; }
+        .control-btn.active-mode { border-color: #1db954; color: #1db954; }
+        input[type="range"] { width: 100%; accent-color: #1db954; cursor: pointer; background: #000000; }
     </style>
 </head>
 <body>
@@ -55,7 +55,6 @@
     <audio id="audio-element"></audio>
 
     <script>
-        // Danh sách rút gọn tối ưu, chỉ giữ lại đường dẫn và thông tin cốt lõi
         const tracks = [
             { title: "Can You Feel My Heart", artist: "Gaming Mix", category: "music", src: "music/Can You Feel My Heart.mp3" },
             { title: "Centuries", artist: "Fall Out Boy", category: "music", src: "music/Centuries.mp3" },
